@@ -1,0 +1,42 @@
+yapyotr
+yet another python binding for Off-the-Record (OTR) Messaging
+
+----
+
+Copyright 2009 Eric Conlon
+This code is licensed under the GPLv3
+http://www.gnu.org/licenses/gpl-3.0.txt
+A copy is also provided in this package (gpl-3.0.txt).
+This software provided without any warranty.
+
+----
+
+***WARNING*** ALPHA SOFTWARE! ***WARNING***
+
+This is still in the late-alpha stage but I needed a place to put it - so why not put it up on GitHub? You will find that if you want to use it you'll have to hack at it. This came into existence as a sort of reference/debugging OTR implementation for another project I'm working on, so it's not polished (yet).
+
+You need jabber.py and PyCrypto to get it working, as well as Python 2.5+ (probably?).
+
+----
+
+NOT YET IMPLEMENTED:
+Proper DH key rotation
+Revealing old MAC keys
+Socialist Millionaire Protocol
+Key fingerprinting
+Proper DSA key loading
+Proper DSA key generation
+Any TLV-foo
+Graceful disconnection
+
+OK SO WHAT CAN I DO?
+Authenticate
+Send/recv encrypted messages
+
+----
+
+Let me know if you end up using this or playing with it, etc.  Patches/bug reports/questions/complaints/etc are welcomed.
+
+- Eric Conlon
+ejconlon@gmail.com
+http://it.fuelsyourcyb.org
