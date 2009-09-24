@@ -33,11 +33,6 @@ class OtrHandler:
 		query.create_query()
 		self.client.send(query.jabber_msg)
 	
-	def respond_to_error(self, msg):
-		error = msg.error_text
-		logging.error(msg)
-		return msg.jabber_msg # display message to user
-		
 	def respond_to_plaintext(self, msg):
 		if self.auth.message_state_is("MSGSTATE_PLAINTEXT"):
 			if OtrOptions["REQUIRE_ENCRYPTION"]:
@@ -52,7 +47,7 @@ class OtrHandler:
 		logging.debug("OTR REQUEST: "+str(msg.versions))
 		
 		if not msg.versions['2']:
-			response = self.makeErrorMsg('Version 1 Not Supported')
+			response = self.message_factory().create_error('Version 1 Not Supported')
 			self.client.send(response)
 			return None # nothing to show user
 		
@@ -92,7 +87,7 @@ class OtrHandler:
 		
 		if OtrOptions["WHITESPACE_START_AKE"]:
 			if not msg.versions['2']:
-				response = self.makeErrorMsg('Version 1 Not Supported')
+				response = self.message_factory().create_error('Version 1 Not Supported')
 				self.client.send(response)
 				return None # nothing to show user
 		
@@ -219,9 +214,9 @@ class OtrHandler:
 		it_checks_out = self.auth.dh_keys.decrypt_their_public_factor( _OT.data_to_bytes(msg.revealed_key_data) )
 		
 		if not it_checks_out:
-			errMsg = self.message_factory()
-			errMsg.create_error('Committed DH factor incorrect')
-			self.client.send(errMsg.jabber_msg)
+			err_msg = self.message_factory()
+			err_msg.create_error('Committed DH factor incorrect')
+			self.client.send(err_msg.jabber_msg)
 			return None # nothing for user
 			raise Exception('stop here - committed DH factor incorrect')
 			
@@ -232,9 +227,9 @@ class OtrHandler:
 		it_checks_out = self.auth.check_their_sig(_OT.data_to_bytes(msg.enc_sig_data), msg.sig_mac)
 		
 		if not it_checks_out:
-			errMsg = self.message_factory()
-			errMsg.create_error('Signature incorrect')
-			self.client.send(errMsg.jabber_msg)
+			err_msg = self.message_factory()
+			err_msg.create_error('Signature incorrect')
+			self.client.send(err_msg.jabber_msg)
 			return None # nothing for user
 			#raise Exception('stop here - signature incorrect')
 		
@@ -270,9 +265,9 @@ class OtrHandler:
 		it_checks_out = self.auth.check_their_sig(_OT.data_to_bytes(msg.enc_sig_data), msg.sig_mac, usePrimes=True)
 		
 		if not it_checks_out:
-			errMsg = self.message_factory()
-			errMsg.create_error('Signature incorrect')
-			self.client.send(errMsg.jabber_msg)
+			err_msg = self.message_factory()
+			err_msg.create_error('Signature incorrect')
+			self.client.send(err_msg.jabber_msg)
 			return None # nothing for user
 			#raise Exception('stop here - signature incorrect')
 		
@@ -288,7 +283,7 @@ class OtrHandler:
 		
 	def respond_to_v1_key_exchange(self, msg):
 		logging.debug("Responding to V1 Key Exchange")
-		msg = self.makeErrorMsg('Version 1 Not Supported')
+		msg = self.message_factory().create_error('Version 1 Not Supported')
 		self.client.send(msg)
 		return None
 		
@@ -297,12 +292,12 @@ class OtrHandler:
 		if self.auth.message_state_is("MSGSTATE_ENCRYPTED"):
 			# Verify the info in the message
 			
-			decMsg = self.auth.dh_keys.receive_data_message(msg)
-			logging.debug( decMsg )
-			if len(decMsg) > 0:
-				logging.debug( "DECRYPTED: "+_OT.bytes_to_string(decMsg) )
+			dec_msg = self.auth.dh_keys.receive_data_message(msg)
+			logging.debug( dec_msg )
+			if len(dec_msg) > 0:
+				logging.debug( "DECRYPTED: "+_OT.bytes_to_string(dec_msg) )
 				if self.echolalic:
-					msg = self.message_factory().make_jabber_message(_OT.bytes_to_string(decMsg))
+					msg = self.message_factory().make_jabber_message(_OT.bytes_to_string(dec_msg))
 					self.process_outgoing(msg)
 			# If verification succeeds:
 			
@@ -330,7 +325,7 @@ class OtrHandler:
 		logging.debug("Responding to Error")
 		logging.error(msg.error_text)
 		if OtrOptions["ERROR_START_AKE"]:
-			msg = self.message_factor().create_query()
+			msg = self.message_factory().create_query()
 			self.client.send(msg)
 		return None
 	

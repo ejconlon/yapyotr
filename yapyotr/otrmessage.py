@@ -95,8 +95,8 @@ class OtrMessage:
 		wb_index = body.find(OtrConstants["whitespace_base"])
 		new_start = wb_index + len(OtrConstants["whitespace_base"])
 		self.versions = {}
-		self.versions['1'] = (body[newstart:].find(OtrConstants["whitespace_v1"]) >= 0)
-		self.versions['2'] = (body[newstart:].find(OtrConstants["whitespace_v2"]) >= 0)
+		self.versions['1'] = (body[new_start:].find(OtrConstants["whitespace_v1"]) >= 0)
+		self.versions['2'] = (body[new_start:].find(OtrConstants["whitespace_v2"]) >= 0)
 		self.parsed_ok = True
 	
 	def parse_vars(self):
@@ -111,7 +111,7 @@ class OtrMessage:
 		self.__dict__.update(parsed_vars)
 							
 		if not byte_reader.consumed_all():
-			raise Exception('Invalid message format: expected %d bytes; got %d' % (o, len(bytes)))
+			raise Exception('Invalid message format: not all bytes consumed')
 		if self.protocol_version != list(OtrConstants["version_2_bytes"]):
 			raise Exception('Invalid protocol version: %s' % str(self.protocol_version))
 		if self.message_type != self.code:

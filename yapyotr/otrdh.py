@@ -115,7 +115,7 @@ class OtrDH:
 	def mark_my_key_as_used(self, keyid):
 		self.my_key_has_been_used[keyid] = True
 		self.my_most_recently_seen.append(keyid)
-	def mark_their_key_as_used(self, key):
+	def mark_their_key_as_used(self, keyid):
 		self.their_most_recently_seen.append(keyid)
 	def get_my_most_recently_seen_keyid(self):
 		return self.my_most_recently_seen[-1]

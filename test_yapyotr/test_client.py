@@ -97,7 +97,7 @@ class TestClient(jabber.Client):
 	
 	# this is for inheritance
 	def disconnectHandler(self):
-		return
+		return jabber.Client.disconnectHandler(self)
 
 # default run parameters
 if __name__ == "__main__":
@@ -107,9 +107,9 @@ if __name__ == "__main__":
 		import test_client_arams as tcp
 		import otr_replay_data
 		if sys.argv[1] == "initiate":
-			replay = OtrReplay(data=otr_replay.alice, do_both_sides=False)
+			replay = OtrReplay(data=otr_replay_data.alice, do_both_sides=False)
 		else:
-			replay = OtrReplay(data=otr_replay.bob, do_both_sides=False)
+			replay = OtrReplay(data=otr_replay_data.bob, do_both_sides=False)
 		client = TestClient(tcp.my_username, tcp.my_hostname, tcp.my_resource, tcp.my_password, replay=replay)
 		if sys.argv[1] == "initiate":
 			client.start_otr(tcp.test_jid, None)
